@@ -24,6 +24,11 @@ export default {
     'search-modal-core': 'src/js/search-modal-core.js',
     'search-modal-compare-craft': 'src/js/search-modal-compare-craft.js',
     'sw-register': 'src/js/sw-register.js',
+    'item-mejores': 'src/js/item-mejores.js',
+    'itemHandlers': 'src/js/itemHandlers.js',
+    'storageUtils': 'src/js/storageUtils.js',
+    'ui-helpers': 'src/js/ui-helpers.js',
+    'item-ui': 'src/js/item-ui.js',
       'ingredientTreeWorker': 'src/js/workers/ingredientTreeWorker.js',
       'costsWorker': 'src/js/workers/costsWorker.js'
     },
