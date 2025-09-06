@@ -7,7 +7,7 @@ Run `npm run build` to regenerate the bundles. Before compiling it removes any p
 ### Build y despliegue
 
 1. Ejecuta `npm run build` para generar los bundles. Este comando limpia `dist/`, calcula `APP_VERSION` y compila los archivos en `dist/<APP_VERSION>/`.
-2. Al finalizar, el script `postbuild` invoca `scripts/purge-cdn.js` para invalidar caches de Cloudflare. Define `CLOUDFLARE_ZONE_ID` y `CLOUDFLARE_TOKEN` en el entorno para que la operación tenga éxito.
+2. Al finalizar, el script `postbuild` invoca `scripts/purge-cdn.js` y elimina en Cloudflare las rutas de la versión anterior. Define `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_TOKEN` y `CLOUDFLARE_BASE_URL` en el entorno para que la operación tenga éxito.
 3. Publica el contenido de `dist/` en tu servidor o CDN. Los recursos incluyen hashes, se ubican bajo `dist/<APP_VERSION>/` y deben servirse con `Cache-Control: no-cache`.
 
 Include the bundles from `/dist/<APP_VERSION>/` in your HTML pages. Los nombres incluyen un hash y pueden consultarse en `dist/manifest.json`:
@@ -35,7 +35,7 @@ Las pruebas sólo requieren Node.js y las dependencias instaladas (`mongodb` y `
 
 ## Despliegue
 
-Los archivos HTML referencian recursos con hash y se sirven con `Cache-Control: no-cache` para que los navegadores obtengan siempre la versión más reciente. Tras cada despliegue, invalida las cachés de la CDN o de Cloudflare para forzar la actualización de estos archivos.
+Los archivos HTML referencian recursos con hash y se sirven con `Cache-Control: no-cache` para que los navegadores obtengan siempre la versión más reciente. El script `scripts/deploy.sh` llama automáticamente a `scripts/purge-cdn.js`, que calcula las rutas de la versión previa y las purga en Cloudflare para que los cambios se propaguen de inmediato.
 
 After loading `/dist/js/bundle-legendary.<hash>.min.js` (consulta `dist/manifest.json` para obtener el hash actual) a global object `window.LegendaryData` becomes available with the following properties:
 
