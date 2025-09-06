@@ -3,7 +3,8 @@ import { writeFileSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { minify } from 'terser';
 
-const appVersion = process.env.APP_VERSION || 'dev';
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url)));
+const appVersion = process.env.APP_VERSION || pkg.version;
 
 export default {
   // Entradas separadas para cada vista o funcionalidad pesada

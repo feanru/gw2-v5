@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && npm run build:packages && APP_VERSION=$(node -p \"require('./package.json').version\") && printf %s $APP_VERSION > version.txt && export APP_VERSION && sed \"s/__APP_VERSION__/$APP_VERSION/\" service-worker.js > service-worker.build.js && npx terser service-worker.build.js -o service-worker.min.js && rm service-worker.build.js && rollup -c",
+    "build": "rm -rf dist && mkdir dist && npm run build:packages && APP_VERSION=$(node scripts/update-version-txt.js) && export APP_VERSION && sed \"s/__APP_VERSION__/$APP_VERSION/\" service-worker.js > service-worker.build.js && npx terser service-worker.build.js -o service-worker.min.js && rm service-worker.build.js && rollup -c",
     "migrate:mongo": "node backend/setup.mongo.js",
     "jobs": "node backend/jobs/index.js",
     "test": "npm --prefix packages/recipe-nesting run build && node tests/dones-worker.test.mjs && node tests/items-core-recalc.test.mjs && node tests/craft-ingredient-mode.test.mjs && node tests/price-helper-map.test.mjs && node tests/recipe-nesting-map.test.mjs && node tests/recipe-nesting-cycle.test.mjs && node tests/recipe-nesting-guildupgrade.test.mjs && node tests/recipe-tree-cache.test.mjs && node tests/recipeTree.test.js && node tests/calculateComponentsPrice.test.mjs && node tests/check-assets.mjs && node tests/gw2api-getItemDetails-parallel.test.mjs && node tests/item-ui-renderRows.test.mjs && node tests/calculateTotals-multiplier.test.mjs && node tests/calculateTotals-trebol.test.mjs",
