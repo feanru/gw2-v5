@@ -7,6 +7,8 @@ RELEASE=${1:-$(git rev-parse --short HEAD)}
 KEEP=${KEEP:-3}
 
 mkdir -p "$TARGET/releases/$RELEASE"
+# Bundles are versioned in dist/<APP_VERSION>/ to avoid cache issues.
+# Copy the entire dist tree so each release has its own assets.
 cp -a dist/. "$TARGET/releases/$RELEASE/"
 ln -sfn "$TARGET/releases/$RELEASE" "$TARGET/current"
 
