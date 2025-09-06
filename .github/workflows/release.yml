@@ -1,0 +1,33 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Version increment"
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run version:${{ inputs.release_type }}
+      - run: npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0
+      - run: |
+          git add CHANGELOG.md
+          VERSION=$(node -p "require('./package.json').version")
+          git commit -m "chore(changelog): update changelog for v$VERSION"
+      - run: git push --follow-tags
