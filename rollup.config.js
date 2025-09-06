@@ -1,5 +1,6 @@
 import terser from '@rollup/plugin-terser';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 export default {
   // Entradas separadas para cada vista o funcionalidad pesada
@@ -30,10 +31,22 @@ export default {
       generateBundle(options, bundle) {
         const manifest = {};
         for (const [fileName, chunk] of Object.entries(bundle)) {
-          if (chunk.type === 'chunk' && chunk.isEntry) {
+          if (chunk.type === 'chunk') {
             const isWorker = chunk.facadeModuleId?.includes('/workers/') ?? false;
-            const originalName = `/dist/js/${chunk.name}${isWorker ? '.js' : '.min.js'}`;
+            const originalName = `/dist/js/${chunk.name}${chunk.isEntry ? (isWorker ? '.js' : '.min.js') : '.js'}`;
             manifest[originalName] = `/dist/js/${fileName}`;
+          }
+        }
+        for (const dir of ['utils', 'services', 'workers']) {
+          let files = [];
+          try {
+            files = readdirSync(join('src/js', dir));
+          } catch {}
+          for (const file of files) {
+            if (!file.endsWith('.js')) continue;
+            const needsMin = dir !== 'workers' && !file.endsWith('.min.js');
+            const distFile = `/dist/js/${dir}/${needsMin ? file.replace(/\.js$/, '.min.js') : file}`;
+            manifest[distFile] = distFile;
           }
         }
         writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2));
