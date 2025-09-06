@@ -1,0 +1,28 @@
+{
+  "name": "gw2-project",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist/js dist/manifest.json && npm run build:packages && APP_VERSION=v$(git rev-parse --short HEAD) && sed \"s/__APP_VERSION__/$APP_VERSION/\" service-worker.js > service-worker.build.js && npx terser service-worker.build.js -o service-worker.min.js && rm service-worker.build.js && rollup -c",
+    "migrate:mongo": "node backend/setup.mongo.js",
+    "jobs": "node backend/jobs/index.js",
+    "test": "npm --prefix packages/recipe-nesting run build && node tests/dones-worker.test.mjs && node tests/items-core-recalc.test.mjs && node tests/craft-ingredient-mode.test.mjs && node tests/price-helper-map.test.mjs && node tests/recipe-nesting-map.test.mjs && node tests/recipe-nesting-cycle.test.mjs && node tests/recipe-nesting-guildupgrade.test.mjs && node tests/recipe-tree-cache.test.mjs && node tests/recipeTree.test.js && node tests/calculateComponentsPrice.test.mjs && node tests/check-assets.mjs && node tests/gw2api-getItemDetails-parallel.test.mjs && node tests/item-ui-renderRows.test.mjs && node tests/calculateTotals-multiplier.test.mjs && node tests/calculateTotals-trebol.test.mjs",
+    "build:packages": "npm --prefix packages/recipe-nesting run build && npm --prefix packages/recipe-calculation run build",
+    "postbuild": "node scripts/update-html.js && npm run purge:cdn",
+    "check-assets": "node scripts/check-assets.js",
+    "bump:cache": "bash scripts/bump-cache-version.sh",
+    "purge:cdn": "node scripts/purge-cdn.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.5.0",
+    "node-cron": "^3.0.2",
+    "node-fetch": "^3.3.2",
+    "redis": "^4.6.7",
+    "recipe-calculation": "file:packages/recipe-calculation",
+    "recipe-nesting": "file:packages/recipe-nesting"
+  },
+  "devDependencies": {
+    "rollup": "^4.16.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup-plugin-multi-input": "^1.3.1"
+  }
+}
