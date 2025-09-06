@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta name="app-version" content="v1330bcf">
-  <script>window.__APP_VERSION__='v1330bcf';</script>
+  <meta name="app-version" content="1.0.0">
+  <script>window.__APP_VERSION__='1.0.0';</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/img/favicon.ico" sizes="16x16" type="image/x-icon">
   <title>Guías y Recursos de Guild Wars 2 en Español</title>
-  <link rel="stylesheet" href="css/global-gw.css?v=v1330bcf">
+  <link integrity="sha256-3KTGYB1FxMzkVqLV4zcAvVqwAMJWbsPxPT44jS0fUXk= sha384-oOV6TGLGOB+l2btdKi1rjgcdp5GrniPY9tUpd1v1UqfZHQcCV9yb7nrrf7ls9S9n" crossorigin="anonymous" rel="stylesheet" href="css/global-gw.css?v=1.0.0">
   <style>
     /* Video de fondo y animación de carga */
     #bg-video{
@@ -133,7 +133,7 @@
 
         function loadUtils() {
           if (!utilsPromise) {
-            utilsPromise = import(`/dist/${window.__APP_VERSION__}/bundle-utils-1.By0Xs4MH.min.js?v=${window.__APP_VERSION__}`);
+            utilsPromise = import(`/dist/1.0.0/bundle-utils-1.B5CUuO5Q.min.js?v=1.0.0`);
           }
           return utilsPromise;
         }
@@ -141,7 +141,7 @@
         openBtn.addEventListener('click', async function(e) {
           e.preventDefault();
           await loadUtils();
-          openSearchModal(`/dist/${window.__APP_VERSION__}/search-modal.D0pWReq9.min.js?v=${window.__APP_VERSION__}`);
+          openSearchModal(`/dist/1.0.0/search-modal.D0pWReq9.min.js?v=1.0.0`);
         });
         const safeClose = async (...args) => {
           await loadUtils();
@@ -314,7 +314,7 @@
   <script type="module">
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        await import(`/dist/${window.__APP_VERSION__}/bundle-auth-nav.CyOGHb8A.min.js?v=${window.__APP_VERSION__}`);
+        await import(`/dist/1.0.0/bundle-auth-nav.DhW_CDvX.min.js?v=1.0.0`);
         window.Auth?.initAuth?.();
       } catch (e) {
         console.error('Error loading auth module', e);
@@ -337,7 +337,7 @@
   <script type="module">
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        await import(`/dist/${window.__APP_VERSION__}/sw-register.Wot8iBZe.min.js?v=${window.__APP_VERSION__}`);
+        await import(`/dist/1.0.0/sw-register.Wot8iBZe.min.js?v=1.0.0`);
       } catch (e) {
         console.error('SW registration failed', e);
       }
