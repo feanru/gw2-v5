@@ -20,6 +20,16 @@ Reemplaza `<hash>` con el valor encontrado en `dist/manifest.json`. Este hash se
 
 La CDN de Cloudflare ignora los query strings al construir la clave de caché, por lo que `APP_VERSION` forma parte de la ruta de los archivos en lugar de usarse como parámetro.
 
+## Versionado
+
+Ejecuta `npm run version:patch`, `npm run version:minor` o `npm run version:major` para actualizar `package.json` y `version.txt`. Estos comandos crean un tag y el CI generará el changelog correspondiente.
+
+Disparadores:
+
+- **PATCH**: cualquier cambio bajo `dist/` sin API pública nueva.
+- **MINOR**: nuevas funcionalidades o bundles compatibles.
+- **MAJOR**: cambios en rutas, nombres o comportamiento de SW.
+
 ## Pruebas
 
 Instala las dependencias del proyecto y ejecuta la suite con:
