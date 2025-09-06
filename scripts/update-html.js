@@ -7,6 +7,14 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
+const versionFile = path.join(__dirname, '..', 'version.txt');
+let version = '0';
+try {
+  version = fs.readFileSync(versionFile, 'utf8').trim();
+} catch (e) {
+  console.warn('Version file not found:', versionFile);
+}
+
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 const rootDir = path.join(__dirname, '..');
 const htmlFiles = fs.readdirSync(rootDir).filter(f => f.endsWith('.html'));
@@ -16,9 +24,14 @@ for (const file of htmlFiles) {
   let content = fs.readFileSync(filePath, 'utf8');
   let updated = content;
   for (const [original, hashed] of Object.entries(manifest)) {
-    const regex = new RegExp(original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-    updated = updated.replace(regex, hashed);
+    const isMin = original.endsWith('.min.js');
+    const baseName = path.basename(original, isMin ? '.min.js' : '.js');
+    const pattern = `/dist/(?:js|v[^/]+)/${baseName}(?:\\.[\\w-]+)?${isMin ? '.min' : ''}\\.js`;
+    const regex = new RegExp(pattern, 'g');
+    updated = updated.replace(regex, `${hashed}?v=${version}`);
   }
+  // Append version to CSS references
+  updated = updated.replace(/(href="css\/[^"]+\.css)(\?v=[^"']*)?"/g, `$1?v=${version}"`);
   if (updated !== content) {
     fs.writeFileSync(filePath, updated);
   }
