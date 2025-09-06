@@ -30,4 +30,5 @@ jobs:
           git add CHANGELOG.md
           VERSION=$(node -p "require('./package.json').version")
           git commit -m "chore(changelog): update changelog for v$VERSION"
+          git tag -f v$VERSION
       - run: git push --follow-tags

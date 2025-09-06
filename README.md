@@ -22,9 +22,9 @@ La CDN de Cloudflare ignora los query strings al construir la clave de caché, p
 
 ## Versionado
 
-Ejecuta `npm run version:patch`, `npm run version:minor` o `npm run version:major` para actualizar `package.json` y `version.txt`. Estos comandos crean un tag y el CI generará el changelog correspondiente.
+Ejecuta `npm run version:patch`, `npm run version:minor` o `npm run version:major` para actualizar `package.json` y `version.txt`. Cada comando invoca `scripts/update-version-txt.js`, crea un commit etiquetado y el flujo de CI genera el changelog correspondiente.
 
-Disparadores:
+Disparadores (`release_type` en el workflow `release`):
 
 - **PATCH**: cualquier cambio bajo `dist/` sin API pública nueva.
 - **MINOR**: nuevas funcionalidades o bundles compatibles.
