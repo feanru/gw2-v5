@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta name="app-version" content="1.0.0">
+  <script>window.__APP_VERSION__='1.0.0';</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/img/favicon.ico" sizes="16x16" type="image/x-icon">
   <title>Detalle de Ítem - GW2</title>
-  <link rel="stylesheet" href="css/global-gw.css?v=1756274160">
+  <link rel="stylesheet" href="css/global-gw.css?v=1.0.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-1YJ4M39JP3"></script>
@@ -134,9 +136,7 @@
 <script type="module" src="/dist/js/item-ui.min.js" defer></script>
 <script type="module" src="/dist/v1330bcf/items-core.DMXEDbc5.min.js?v=1756274160" defer></script>
 <script type="module">
-  import('/dist/js/services-Bc-4z6yK.js').catch(() =>
-    import('/dist/v1330bcf/services/recipeService.min.js')
-  );
+  import(`/dist/${window.__APP_VERSION__}/services/recipeService.min.js?v=${window.__APP_VERSION__}`);
 </script>
 <script type="module" src="/dist/v1330bcf/item-loader.CrBuTGWD.min.js?v=1756274160" defer></script>
   

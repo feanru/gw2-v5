@@ -32,6 +32,14 @@ for (const file of htmlFiles) {
   }
   // Append version to CSS references
   updated = updated.replace(/(href="css\/[^"]+\.css)(\?v=[^"']*)?"/g, `$1?v=${version}"`);
+  const metaTag = `<meta name="app-version" content="${version}">`;
+  const versionScript = `<script>window.__APP_VERSION__='${version}';</script>`;
+  if (!updated.includes('name="app-version"')) {
+    updated = updated.replace(/<head>/i, `<head>\n  ${metaTag}\n  ${versionScript}`);
+  } else {
+    updated = updated.replace(/<meta name="app-version" content="[^"]*">/, metaTag);
+    updated = updated.replace(/window.__APP_VERSION__='[^']*';/, `window.__APP_VERSION__='${version}';`);
+  }
   if (updated !== content) {
     fs.writeFileSync(filePath, updated);
   }
