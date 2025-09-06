@@ -67,6 +67,7 @@ export default {
   output: {
     dir: `dist/${appVersion}`,
     format: 'es',
+    sourcemap: true,
     entryFileNames: (chunkInfo) =>
       chunkInfo.facadeModuleId.includes('/workers/')
         ? '[name].[hash].js'
