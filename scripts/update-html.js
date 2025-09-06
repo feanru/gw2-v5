@@ -75,7 +75,7 @@ for (const file of htmlFiles) {
   for (const [original, hashed] of Object.entries(manifest)) {
     const isMin = original.endsWith('.min.js');
     const baseName = path.basename(original, isMin ? '.min.js' : '.js');
-    const pattern = `/dist/(?:js|v[^/]+)/${baseName}(?:\\.[\\w-]+)?${isMin ? '.min' : ''}\\.js`;
+    const pattern = `/dist/(?:js|[^/]+)/${baseName}(?:\\.[\\w-]+)?${isMin ? '.min' : ''}\\.js`;
     const regex = new RegExp(pattern, 'g');
     updated = updated.replace(regex, `${hashed}?v=${version}`);
   }
