@@ -11,10 +11,21 @@ const VIDEO_ASSETS = [
   'img/Secuencia03.mp4',
 ];
 
+function stripQuery(input) {
+  const url = new URL(
+    typeof input === 'string' ? input : input.url,
+    self.location.origin,
+  );
+  url.search = '';
+  return url.href;
+}
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(VIDEO_ASSETS))
+    caches
+      .open(STATIC_CACHE)
+      .then((cache) => cache.addAll(VIDEO_ASSETS.map(stripQuery)))
   );
 });
 
@@ -92,7 +103,9 @@ self.addEventListener('message', (event) => {
   if (data.type === 'clean') {
     event.waitUntil(cleanExpired());
   } else if (data.type === 'invalidate' && data.url) {
-    event.waitUntil(caches.open(API_CACHE).then((c) => c.delete(data.url)));
+    event.waitUntil(
+      caches.open(API_CACHE).then((c) => c.delete(stripQuery(data.url)))
+    );
   } else if (data.type === 'invalidateItem' && data.id != null) {
     event.waitUntil(invalidateItem(data.id));
   } else if (data.type === 'invalidateAll') {
@@ -102,7 +115,8 @@ self.addEventListener('message', (event) => {
 
 async function cacheFirst(req, cacheName) {
   const cache = await caches.open(cacheName);
-  const cached = await cache.match(req);
+  const key = stripQuery(req);
+  const cached = await cache.match(key);
   if (cached) {
     return cached;
   }
@@ -112,7 +126,7 @@ async function cacheFirst(req, cacheName) {
     const isJs =
       req.destination === 'script' || new URL(req.url).pathname.endsWith('.js');
     if (!isJs || type.includes('javascript')) {
-      cache.put(req, res.clone());
+      cache.put(key, res.clone());
     }
   }
   return res;
@@ -129,7 +143,8 @@ function getTTLFromResponse(res) {
 
 async function staleWhileRevalidate(req, cacheName) {
   const cache = await caches.open(cacheName);
-  const cached = await cache.match(req);
+  const key = stripQuery(req);
+  const cached = await cache.match(key);
   const now = Date.now();
 
   const fetchAndUpdate = async () => {
@@ -147,7 +162,7 @@ async function staleWhileRevalidate(req, cacheName) {
         headers,
       });
       // Clone the response for caching and return a separate clone to the client
-      await cache.put(req, res.clone());
+      await cache.put(key, res.clone());
       return res.clone();
     }
     return netRes;
@@ -171,17 +186,18 @@ async function cleanExpired() {
   const now = Date.now();
   await Promise.all(
     keys.map(async (req) => {
-      const res = await cache.match(req);
+      const key = stripQuery(req);
+      const res = await cache.match(key);
       const exp = parseInt(res.headers.get('X-Cache-Expires') || '0', 10);
       if (exp && now > exp) {
-        await cache.delete(req);
+        await cache.delete(key);
         return;
       }
       if (!exp) {
         const dateHeader = res.headers.get('Date');
         const created = dateHeader ? new Date(dateHeader).getTime() : 0;
         if (created && now - created > DEFAULT_TTL) {
-          await cache.delete(req);
+          await cache.delete(key);
         }
       }
     })
@@ -199,7 +215,7 @@ async function invalidateItem(id) {
         url.pathname.endsWith(`/items/${id}`) ||
         url.searchParams.get('output') === String(id)
       ) {
-        return cache.delete(req);
+        return cache.delete(stripQuery(req));
       }
       return null;
     })
