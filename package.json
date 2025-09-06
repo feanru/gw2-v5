@@ -13,9 +13,9 @@
     "bump:cache": "bash scripts/bump-cache-version.sh",
     "purge:cdn": "node scripts/purge-cdn.js",
     "version": "node scripts/update-version-txt.js",
-    "version:patch": "npm version patch",
-    "version:minor": "npm version minor",
-    "version:major": "npm version major"
+    "version:patch": "npm version patch -m \"chore(release): v%s\"",
+    "version:minor": "npm version minor -m \"chore(release): v%s\"",
+    "version:major": "npm version major -m \"chore(release): v%s\""
   },
   "dependencies": {
     "mongodb": "^6.5.0",
