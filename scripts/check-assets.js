@@ -9,9 +9,9 @@ const missing = [];
 for (const htmlFile of htmlFiles) {
   const filePath = path.join(rootDir, htmlFile);
   const content = fs.readFileSync(filePath, 'utf8');
-  const matches = content.match(/\/dist\/js\/[^"'\s)]+\.js[^"'\s)]*/g) || [];
+  const matches = content.match(/\/dist\/[^/"'\s)]+\/[^"'\s)]+\.js(?:\?v=[^"'\s)]*)?/g) || [];
   for (const ref of new Set(matches)) {
-    const [cleanRef] = ref.split('?');
+    const cleanRef = ref.replace(/\?v=[^"'\s)]*/, '');
     const relative = cleanRef.replace(/^\//, '');
     const assetPath = path.join(rootDir, relative);
     if (!fs.existsSync(assetPath)) {

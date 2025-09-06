@@ -10,13 +10,30 @@ if (!zone || !token || !baseUrl) {
   process.exit(1);
 }
 
+let prevVersion = process.argv[2];
+if (!prevVersion) {
+  try {
+    const tree = execSync('git ls-tree HEAD^:dist', { encoding: 'utf8' })
+      .split('\n')
+      .find((l) => /\btree\b/.test(l));
+    if (tree) {
+      const parts = tree.trim().split(/\s+/);
+      prevVersion = parts[parts.length - 1];
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 let urls = [];
-try {
-  const prevManifestRaw = execSync('git show HEAD^:dist/manifest.json', { encoding: 'utf8' });
-  const prevManifest = JSON.parse(prevManifestRaw);
-  urls = [...new Set(Object.values(prevManifest))].map((p) => `${baseUrl.replace(/\/$/, '')}${p}`);
-} catch (e) {
-  console.warn('Previous manifest not found, purging everything');
+if (prevVersion) {
+  const cleanBase = baseUrl.replace(/\/$/, '');
+  urls = [
+    `${cleanBase}/dist/${prevVersion}/*`,
+    `${cleanBase}/*?v=${prevVersion}`,
+  ];
+} else {
+  console.warn('Previous version not found, purging everything');
 }
 
 const payload = urls.length > 0 ? { files: urls } : { purge_everything: true };
