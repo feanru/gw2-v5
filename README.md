@@ -6,17 +6,19 @@ Run `npm run build` to regenerate the bundles. Before compiling it removes any p
 
 ### Build y despliegue
 
-1. Ejecuta `npm run build` para generar los bundles. Este comando limpia `dist/js` y `dist/manifest.json` al inicio, calcula `APP_VERSION` y compila los archivos.
+1. Ejecuta `npm run build` para generar los bundles. Este comando limpia `dist/`, calcula `APP_VERSION` y compila los archivos en `dist/<APP_VERSION>/`.
 2. Al finalizar, el script `postbuild` invoca `scripts/purge-cdn.js` para invalidar caches de Cloudflare. Define `CLOUDFLARE_ZONE_ID` y `CLOUDFLARE_TOKEN` en el entorno para que la operación tenga éxito.
-3. Publica el contenido de `dist/` en tu servidor o CDN. Los recursos incluyen hashes y deben servirse con `Cache-Control: no-cache`.
+3. Publica el contenido de `dist/` en tu servidor o CDN. Los recursos incluyen hashes, se ubican bajo `dist/<APP_VERSION>/` y deben servirse con `Cache-Control: no-cache`.
 
-Include the bundles from `/dist/js/` in your HTML pages. Los nombres incluyen un hash y pueden consultarse en `dist/manifest.json`:
+Include the bundles from `/dist/<APP_VERSION>/` in your HTML pages. Los nombres incluyen un hash y pueden consultarse en `dist/manifest.json`:
 
 ```html
-<script src="/dist/js/bundle-legendary.<hash>.min.js"></script>
+<script src="/dist/<APP_VERSION>/bundle-legendary.<hash>.min.js"></script>
 ```
 
 Reemplaza `<hash>` con el valor encontrado en `dist/manifest.json`. Este hash se regenera cada vez que se compila.
+
+La CDN de Cloudflare ignora los query strings al construir la clave de caché, por lo que `APP_VERSION` forma parte de la ruta de los archivos en lugar de usarse como parámetro.
 
 ## Pruebas
 

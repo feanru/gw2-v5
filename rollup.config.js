@@ -1,6 +1,9 @@
 import terser from '@rollup/plugin-terser';
-import { writeFileSync, readdirSync } from 'node:fs';
+import { writeFileSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { minify } from 'terser';
+
+const appVersion = process.env.APP_VERSION || 'dev';
 
 export default {
   // Entradas separadas para cada vista o funcionalidad pesada
@@ -28,13 +31,13 @@ export default {
     terser(),
     {
       name: 'manifest',
-      generateBundle(options, bundle) {
+      async generateBundle(options, bundle) {
         const manifest = {};
         for (const [fileName, chunk] of Object.entries(bundle)) {
           if (chunk.type === 'chunk') {
             const isWorker = chunk.facadeModuleId?.includes('/workers/') ?? false;
             const originalName = `/dist/js/${chunk.name}${chunk.isEntry ? (isWorker ? '.js' : '.min.js') : '.js'}`;
-            manifest[originalName] = `/dist/js/${fileName}`;
+            manifest[originalName] = `/dist/${appVersion}/${fileName}`;
           }
         }
         for (const dir of ['utils', 'services', 'workers']) {
@@ -45,8 +48,16 @@ export default {
           for (const file of files) {
             if (!file.endsWith('.js')) continue;
             const needsMin = dir !== 'workers' && !file.endsWith('.min.js');
+            const srcPath = join('src/js', dir, file);
+            let code = readFileSync(srcPath, 'utf8');
+            if (needsMin) {
+              const result = await minify(code);
+              code = result.code;
+            }
+            const outFile = `${dir}/${needsMin ? file.replace(/\.js$/, '.min.js') : file}`;
+            this.emitFile({ type: 'asset', fileName: outFile, source: code });
             const distFile = `/dist/js/${dir}/${needsMin ? file.replace(/\.js$/, '.min.js') : file}`;
-            manifest[distFile] = distFile;
+            manifest[distFile] = `/dist/${appVersion}/${outFile}`;
           }
         }
         writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2));
@@ -54,7 +65,7 @@ export default {
     }
   ],
   output: {
-    dir: 'dist/js',
+    dir: `dist/${appVersion}`,
     format: 'es',
     entryFileNames: (chunkInfo) =>
       chunkInfo.facadeModuleId.includes('/workers/')
