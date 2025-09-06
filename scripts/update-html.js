@@ -73,12 +73,13 @@ for (const file of htmlFiles) {
   let content = fs.readFileSync(filePath, 'utf8');
   let updated = content;
   for (const [original, hashed] of Object.entries(manifest)) {
-    const isMin = original.endsWith('.min.js');
-    const baseName = path.basename(original, isMin ? '.min.js' : '.js');
-    const pattern = `/dist/(?:js|[^/]+)/${baseName}(?:\\.[\\w-]+)?${isMin ? '.min' : ''}\\.js`;
-    const regex = new RegExp(pattern, 'g');
+    const escaped = original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`${escaped}(?:\\?v=[^"']*)?`, 'g');
     updated = updated.replace(regex, `${hashed}?v=${version}`);
   }
+  updated = updated.replace(/\/dist\/js\/(\w+\.min\.js)(?:\?v=[^"']*)?/g, `/dist/${version}/$1?v=${version}`);
+  updated = updated.replace(/\?v=\$\{window.__APP_VERSION__\}/g, `?v=${version}`);
+  updated = updated.replace(/\/dist\/\$\{window.__APP_VERSION__\}\//g, `/dist/${version}/`);
   // Append version to CSS references
   updated = updated.replace(/(href="css\/[^"]+\.css)(\?v=[^"']*)?"/g, `$1?v=${version}"`);
   const metaTag = `<meta name="app-version" content="${version}">`;

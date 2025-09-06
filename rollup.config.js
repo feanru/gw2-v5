@@ -5,6 +5,7 @@ import { minify } from 'terser';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url)));
 const appVersion = process.env.APP_VERSION || pkg.version;
+const noHashEntries = new Set(['ui-helpers', 'compare-ui', 'storageUtils', 'compareHandlers']);
 
 export default {
   // Entradas separadas para cada vista o funcionalidad pesada
@@ -28,6 +29,8 @@ export default {
     'itemHandlers': 'src/js/itemHandlers.js',
     'storageUtils': 'src/js/storageUtils.js',
     'ui-helpers': 'src/js/ui-helpers.js',
+    'compare-ui': 'src/js/compare-ui.js',
+    'compareHandlers': 'src/js/compareHandlers.js',
     'item-ui': 'src/js/item-ui.js',
       'ingredientTreeWorker': 'src/js/workers/ingredientTreeWorker.js',
       'costsWorker': 'src/js/workers/costsWorker.js'
@@ -74,10 +77,15 @@ export default {
     dir: `dist/${appVersion}`,
     format: 'es',
     sourcemap: true,
-    entryFileNames: (chunkInfo) =>
-      chunkInfo.facadeModuleId.includes('/workers/')
+    entryFileNames: (chunkInfo) => {
+      const name = chunkInfo.name;
+      if (noHashEntries.has(name)) {
+        return '[name].min.js';
+      }
+      return chunkInfo.facadeModuleId.includes('/workers/')
         ? '[name].[hash].js'
-        : '[name].[hash].min.js',
+        : '[name].[hash].min.js';
+    },
     chunkFileNames: '[name]-[hash].js',
     manualChunks(id) {
       if (id.includes('src/js/utils')) {
