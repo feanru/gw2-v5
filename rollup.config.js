@@ -77,6 +77,9 @@ export default {
               if (dir === 'services' || dir === 'workers') {
                 code = code.replace(/\.\.\/utils\/([^"']+)\.js/g, (m, p1) => p1.endsWith('.min') ? m : `../utils/${p1}.min.js`);
               }
+              if (dir === 'utils' || dir === 'services') {
+                code = code.replace(/\.\.\/config\.js/g, '../config.min.js');
+              }
             }
             const outName = dir === 'workers' ? file : file.replace(/\.js$/, '.min.js');
             const outFile = `${dir}/${outName}`;
@@ -85,11 +88,14 @@ export default {
             manifest[distFile] = `/dist/${appVersion}/${outFile}`;
           }
         }
-        // Include config.js as a non-hashed asset
+        // Include config.js (and minified version) as non-hashed assets
         try {
           const configCode = readFileSync('src/js/config.js', 'utf8');
+          const configMin = (await minify(configCode)).code;
           this.emitFile({ type: 'asset', fileName: 'config.js', source: configCode });
+          this.emitFile({ type: 'asset', fileName: 'config.min.js', source: configMin });
           manifest['/dist/js/config.js'] = `/dist/${appVersion}/config.js`;
+          manifest['/dist/js/config.min.js'] = `/dist/${appVersion}/config.min.js`;
         } catch {}
         writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2));
       }
