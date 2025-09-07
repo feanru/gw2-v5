@@ -19,34 +19,49 @@ function getHtmlFiles(dir) {
   return files;
 }
 
+function checkRef(ref, filePath, baseDir) {
+  if (/^(https?:|mailto:|data:|javascript:|tel:|\/\/)/i.test(ref)) {
+    return;
+  }
+  if (ref.startsWith('#')) {
+    return;
+  }
+  const cleanRef = ref.split(/[?#]/)[0];
+  const target = ref.startsWith('/')
+    ? path.join(rootDir, cleanRef)
+    : path.join(baseDir, cleanRef);
+  if (fs.existsSync(target)) {
+    return;
+  }
+  if (fs.existsSync(`${target}.html`)) {
+    return;
+  }
+  missing.push(`${path.relative(rootDir, filePath)} -> ${ref}`);
+}
+
 function checkReferences(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
-  const regex = /\b(?:src|href)=["']([^"']+)["']/gi;
   const baseDir = path.dirname(filePath);
   let match;
 
-  while ((match = regex.exec(content)) !== null) {
-    const ref = match[1];
-    if (/^(https?:|mailto:|data:|javascript:|tel:|\/\/)/i.test(ref)) {
-      continue;
-    }
-    if (ref.startsWith('#')) {
-      continue;
-    }
-    const cleanRef = ref.split(/[?#]/)[0];
-    const target = ref.startsWith('/')
-      ? path.join(rootDir, cleanRef)
-      : path.join(baseDir, cleanRef);
-    try {
-      fs.accessSync(target);
-    } catch {
-      const withHtml = `${target}.html`;
-      try {
-        fs.accessSync(withHtml);
-      } catch {
-        missing.push(`${path.relative(rootDir, filePath)} -> ${ref}`);
-      }
-    }
+  const attrRegex = /\b(?:src|href)=["']([^"']+)["']/gi;
+  while ((match = attrRegex.exec(content)) !== null) {
+    checkRef(match[1], filePath, baseDir);
+  }
+
+  const workerRegex = /new\s+Worker\(\s*['"]([^'"\s]+)['"]/g;
+  while ((match = workerRegex.exec(content)) !== null) {
+    checkRef(match[1], filePath, baseDir);
+  }
+
+  const swRegex = /navigator\.serviceWorker\.register\(\s*['"]([^'"\s]+)['"]/g;
+  while ((match = swRegex.exec(content)) !== null) {
+    checkRef(match[1], filePath, baseDir);
+  }
+
+  const fetchRegex = /fetch\(\s*['"]([^'"\s]+?\.(?:json|js))['"]/g;
+  while ((match = fetchRegex.exec(content)) !== null) {
+    checkRef(match[1], filePath, baseDir);
   }
 }
 
