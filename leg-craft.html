@@ -166,15 +166,15 @@
   <script type="module">
     const version = window.__APP_VERSION__;
     await import(`/dist/${version}/bundle-utils-1.B5CUuO5Q.min.js?v=${version}`);
-    await import(`/dist/${version}/bundle-auth-nav.DhW_CDvX.min.js?v=${version}`);
-    await import(`/dist/${version}/bundle-legendary.nbRbywB-.min.js?v=${version}`);
+    await import(`/dist/${version}/bundle-auth-nav.CqVBeA8h.min.js?v=${version}`);
+    await import(`/dist/${version}/bundle-legendary.B3CHYxWY.min.js?v=${version}`);
     // Inicializar autenticación cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
       if (window.Auth && typeof window.Auth.initAuth === 'function') {
         window.Auth.initAuth();
       }
     });
-    await import(`/dist/${version}/tabs.DUiiG-cO.min.js?v=${version}`);
+    await import(`/dist/${version}/tabs.min.js?v=${version}`);
     await import(`/dist/${version}/feedback-modal.BaGBwUid.min.js?v=${version}`);
     await import(`/dist/${version}/sw-register.Wot8iBZe.min.js?v=${version}`);
   </script>
