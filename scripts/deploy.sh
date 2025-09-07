@@ -19,5 +19,7 @@ ln -sfn "$TARGET/releases/$RELEASE" "$TARGET/current"
 cd "$TARGET/releases"
 ls -1t | tail -n +$((KEEP+1)) | xargs -r rm -rf
 
+npm --prefix "$ROOT" run check-integrity
+
 # Purge CDN cache to force revalidation of assets
 node "$ROOT/scripts/purge-cdn.js"
