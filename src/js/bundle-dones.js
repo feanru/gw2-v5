@@ -1,3 +1,4 @@
+import './dones.js';
 import fetchWithRetry from './utils/fetchWithRetry.js';
 // Bundled dones core and tabs
 (function(){
