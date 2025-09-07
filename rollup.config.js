@@ -5,7 +5,7 @@ import { minify } from 'terser';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url)));
 const appVersion = process.env.APP_VERSION || pkg.version;
-const noHashEntries = new Set(['ui-helpers', 'compare-ui', 'storageUtils', 'compareHandlers']);
+const noHashEntries = new Set(['ui-helpers', 'compare-ui', 'storageUtils', 'compareHandlers', 'cuenta']);
 
 export default {
   // Entradas separadas para cada vista o funcionalidad pesada
@@ -32,6 +32,7 @@ export default {
     'compare-ui': 'src/js/compare-ui.js',
     'compareHandlers': 'src/js/compareHandlers.js',
     'item-ui': 'src/js/item-ui.js',
+    'cuenta': 'src/js/cuenta.js',
       'ingredientTreeWorker': 'src/js/workers/ingredientTreeWorker.js',
       'costsWorker': 'src/js/workers/costsWorker.js'
     },
