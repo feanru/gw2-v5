@@ -19,33 +19,50 @@ function getHtmlFiles(dir) {
   return files;
 }
 
+function verifyReference(ref, baseDir, filePath) {
+  if (/^(https?:|mailto:|data:|javascript:|tel:|\/\/)/i.test(ref)) {
+    return;
+  }
+  if (ref.startsWith('#')) {
+    return;
+  }
+  const cleanRef = ref.split(/[?#]/)[0];
+  const target = ref.startsWith('/')
+    ? path.join(rootDir, cleanRef)
+    : path.join(baseDir, cleanRef);
+  try {
+    fs.accessSync(target);
+  } catch {
+    const withHtml = `${target}.html`;
+    try {
+      fs.accessSync(withHtml);
+    } catch {
+      missing.push(`${path.relative(rootDir, filePath)} -> ${ref}`);
+    }
+  }
+}
+
 function checkReferences(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
-  const regex = /\b(?:src|href)=["']([^"']+)["']/gi;
   const baseDir = path.dirname(filePath);
-  let match;
+  const patterns = [
+    /\b(?:src|href)=["']([^"']+)["']/gi,
+    /new\s+Worker\(\s*["']([^"']+)["']\s*\)/gi,
+    /navigator\.serviceWorker\.register\(\s*["']([^"']+)["']\s*\)/gi,
+    /fetch\(\s*["']([^"']+)["']\s*\)/gi,
+  ];
 
-  while ((match = regex.exec(content)) !== null) {
-    const ref = match[1];
-    if (/^(https?:|mailto:|data:|javascript:|tel:|\/\/)/i.test(ref)) {
-      continue;
-    }
-    if (ref.startsWith('#')) {
-      continue;
-    }
-    const cleanRef = ref.split(/[?#]/)[0];
-    const target = ref.startsWith('/')
-      ? path.join(rootDir, cleanRef)
-      : path.join(baseDir, cleanRef);
-    try {
-      fs.accessSync(target);
-    } catch {
-      const withHtml = `${target}.html`;
-      try {
-        fs.accessSync(withHtml);
-      } catch {
-        missing.push(`${path.relative(rootDir, filePath)} -> ${ref}`);
+  for (const regex of patterns) {
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      const ref = match[1];
+      if (regex === patterns[3]) {
+        const clean = ref.split(/[?#]/)[0];
+        if (!clean.endsWith('.json') && !clean.endsWith('.js')) {
+          continue;
+        }
       }
+      verifyReference(ref, baseDir, filePath);
     }
   }
 }
