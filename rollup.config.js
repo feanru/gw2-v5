@@ -64,17 +64,24 @@ export default {
             files = readdirSync(join('src/js', dir));
           } catch {}
           for (const file of files) {
-            if (!file.endsWith('.js')) continue;
-            const needsMin = dir !== 'workers' && !file.endsWith('.min.js');
+            if (!file.endsWith('.js') || file.endsWith('.min.js')) continue;
             const srcPath = join('src/js', dir, file);
             let code = readFileSync(srcPath, 'utf8');
+            const needsMin = dir !== 'workers';
             if (needsMin) {
               const result = await minify(code);
               code = result.code;
+              if (dir === 'utils') {
+                code = code.replace(/\.\/([^"']+)\.js/g, './$1.min.js');
+              }
+              if (dir === 'services' || dir === 'workers') {
+                code = code.replace(/\.\.\/utils\/([^"']+)\.js/g, (m, p1) => p1.endsWith('.min') ? m : `../utils/${p1}.min.js`);
+              }
             }
-            const outFile = `${dir}/${needsMin ? file.replace(/\.js$/, '.min.js') : file}`;
+            const outName = dir === 'workers' ? file : file.replace(/\.js$/, '.min.js');
+            const outFile = `${dir}/${outName}`;
             this.emitFile({ type: 'asset', fileName: outFile, source: code });
-            const distFile = `/dist/js/${dir}/${needsMin ? file.replace(/\.js$/, '.min.js') : file}`;
+            const distFile = `/dist/js/${dir}/${outName}`;
             manifest[distFile] = `/dist/${appVersion}/${outFile}`;
           }
         }

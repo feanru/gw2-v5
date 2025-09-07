@@ -1,4 +1,4 @@
-import { fetchWithCache } from '../utils/requestCache.js';
+import { fetchWithCache } from '../utils/requestCache.min.js';
 
 self.onmessage = async (e) => {
   const { mainItemId } = e.data;
