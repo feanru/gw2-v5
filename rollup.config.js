@@ -78,6 +78,12 @@ export default {
             manifest[distFile] = `/dist/${appVersion}/${outFile}`;
           }
         }
+        // Include config.js as a non-hashed asset
+        try {
+          const configCode = readFileSync('src/js/config.js', 'utf8');
+          this.emitFile({ type: 'asset', fileName: 'config.js', source: configCode });
+          manifest['/dist/js/config.js'] = `/dist/${appVersion}/config.js`;
+        } catch {}
         writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2));
       }
     }

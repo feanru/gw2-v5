@@ -1,9 +1,9 @@
 // Servicio para manejar las llamadas a la API de recetas v2
 
-import { getCached, setCached } from '../utils/cache.js';
-import { fetchWithCache } from '../utils/requestCache.js';
-import fetchWithRetry from '../utils/fetchWithRetry.js';
-import { getPrice, preloadPrices } from '../utils/priceHelper.js';
+import { getCached, setCached } from '../utils/cache.min.js';
+import { fetchWithCache } from '../utils/requestCache.min.js';
+import fetchWithRetry from '../utils/fetchWithRetry.min.js';
+import { getPrice, preloadPrices } from '../utils/priceHelper.min.js';
 import config from '../config.js';
 
 const API_BASE_URL = config.API_BASE_URL;

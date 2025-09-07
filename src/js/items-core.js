@@ -1,9 +1,9 @@
 // Common item functions used across item and compare views
 // Copied from original item.js for reuse
 
-import { getCached, setCached } from './utils/cache.js';
-import { fetchWithCache } from './utils/requestCache.js';
-import { getPrice, preloadPrices } from './utils/priceHelper.js';
+import { getCached, setCached } from './utils/cache.min.js';
+import { fetchWithCache } from './utils/requestCache.min.js';
+import { getPrice, preloadPrices } from './utils/priceHelper.min.js';
 
 if (typeof window !== 'undefined') {
   window.ingredientObjs = window.ingredientObjs || [];
