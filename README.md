@@ -10,6 +10,8 @@ Run `npm run build` to regenerate the bundles. Before compiling it removes any p
 2. Al finalizar, el script `postbuild` invoca `scripts/purge-cdn.js` y elimina en Cloudflare las rutas de la versión anterior. Define `CLOUDFLARE_ZONE_ID`, `CLOUDFLARE_TOKEN` y `CLOUDFLARE_BASE_URL` en el entorno para que la operación tenga éxito.
 3. Publica el contenido de `dist/` en tu servidor o CDN. Los recursos incluyen hashes, se ubican bajo `dist/<APP_VERSION>/` y deben servirse con `Cache-Control: no-cache`.
 
+Para asegurar la integridad de los recursos, revisa el [flujo de despliegue seguro](docs/integrity-debugging.md#flujo-de-despliegue-seguro) antes de publicar cambios.
+
 Include the bundles from `/dist/<APP_VERSION>/` in your HTML pages. Los nombres incluyen un hash y pueden consultarse en `dist/manifest.json`:
 
 ```html
