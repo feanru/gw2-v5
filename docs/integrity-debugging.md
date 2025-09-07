@@ -25,3 +25,8 @@ El destino se controla con la variable de entorno `SOURCE_MAP_TARGET`:
 Los bundles apuntan automáticamente al nombre y ubicación correctos mediante
 `//# sourceMappingURL=...`. Para depurar basta con acceder al mapa generado
 de la versión correspondiente.
+
+## Flujo de despliegue seguro
+
+- No modificar `dist/` después de `npm run build`.
+- Reejecutar `scripts/update-html.js` si se altera algún archivo.
