@@ -1,5 +1,5 @@
-import fetchWithRetry from './utils/fetchWithRetry.js';
-import { startPriceUpdater } from './utils/priceUpdater.js';
+import fetchWithRetry from './utils/fetchWithRetry.min.js';
+import { startPriceUpdater } from './utils/priceUpdater.min.js';
 
 let prepareIngredientTreeData,
   CraftIngredient,
@@ -16,11 +16,9 @@ async function ensureDeps() {
   if (!depsPromise) {
     depsPromise = Promise.all([
       import('./items-core.js'),
-      import('./utils/priceHelper.js'),
-      import('./services/recipeService.js').catch(() =>
-        import('./services/recipeService.min.js')
-      ),
-      import('./utils/stateManager.js')
+      import('./utils/priceHelper.min.js'),
+      import('./services/recipeService.min.js'),
+      import('./utils/stateManager.min.js')
     ]).then(([core, price, recipe, state]) => {
       ({
         prepareIngredientTreeData,
