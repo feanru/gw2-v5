@@ -379,8 +379,21 @@ export async function prepareIngredientTreeData(mainItemId, mainRecipeData) {
     const handleMessage = (event) => {
       ingredientTreeWorker.removeEventListener('message', handleMessage);
       ingredientTreeWorker.removeEventListener('error', handleError);
-      let serialized = event.data?.tree || [];
+      const { tree, error } = event.data || {};
       ingredientTreeWorker = null;
+      if (error) {
+        const err = new Error(error);
+        console.error('Error en ingredientTreeWorker:', err.message, err);
+        const msg = `Error procesando ingredientes: ${err.message}`;
+        if (window.StorageUtils && typeof window.StorageUtils.showToast === 'function') {
+          window.StorageUtils.showToast(msg, 'error');
+        } else if (typeof alert === 'function') {
+          alert(msg);
+        }
+        reject(err);
+        return;
+      }
+      let serialized = tree || [];
       if (!Array.isArray(serialized)) {
         if (serialized && typeof serialized === 'object') {
           serialized = Array.isArray(serialized.children) ? serialized.children : [serialized];
@@ -566,7 +579,12 @@ if (typeof window !== 'undefined') {
       if (typeof window.hideSkeleton === 'function') window.hideSkeleton(skeleton);
     } catch (e) {
       if (typeof window.hideSkeleton === 'function') window.hideSkeleton(skeleton);
-      alert('Error al agregar el ítem: ' + (e?.message || e));
+      const msg = 'Error al agregar el ítem: ' + (e?.message || e);
+      if (window.StorageUtils && typeof window.StorageUtils.showToast === 'function') {
+        window.StorageUtils.showToast(msg, 'error');
+      } else if (typeof alert === 'function') {
+        alert(msg);
+      }
       console.error('Error al agregar el ítem', e);
     }
   };
