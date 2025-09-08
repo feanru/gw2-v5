@@ -405,6 +405,9 @@ async function renderSpecialDons() {
 // === Tributo Dracónico ===
 async function getDraconicTribute() {
   const { LEGENDARY_ITEMS_3GEN } = window.LegendaryData || {};
+  if (!LEGENDARY_ITEMS_3GEN) {
+    throw new Error('LegendaryData is not loaded');
+  }
   for (const weapon of Object.values(LEGENDARY_ITEMS_3GEN)) {
     const tribute = weapon.components?.find(c => {
       const nm = c.name?.toLowerCase() || '';
@@ -462,7 +465,12 @@ async function renderDraconicTribute() {
     container.innerHTML = html;
   } catch (e) {
     console.error('Error al renderizar Tributo Dracónico:', e);
-    container.innerHTML = '<div class="error-message">Error al cargar el Tributo Dracónico.</div>';
+    if (e.message === 'LegendaryData is not loaded') {
+      console.warn('LegendaryData is not loaded. Asegúrate de cargar los datos de legendarios antes de renderizar.');
+      container.innerHTML = '<div class="error-message">Los datos de legendarios no están cargados.</div>';
+    } else {
+      container.innerHTML = '<div class="error-message">Error al cargar el Tributo Dracónico.</div>';
+    }
   } finally {
     hideSkeleton(skeleton);
   }
