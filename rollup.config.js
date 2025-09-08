@@ -44,7 +44,7 @@ export default {
       'ingredientTreeWorker': 'src/js/workers/ingredientTreeWorker.js',
       'costsWorker': 'src/js/workers/costsWorker.js'
     },
-  external: ['./tabs.min.js', './services/recipeService.min.js'],
+  external: ['./tabs.min.js', './services/recipeService.min.js', './config.min.js'],
   plugins: [
     terser(),
     {

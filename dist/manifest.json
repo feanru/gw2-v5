@@ -43,5 +43,6 @@
   "/dist/js/workers/donesWorker.js": "/dist/1.0.0/workers/donesWorker.js",
   "/dist/js/workers/ingredientTreeWorker.js": "/dist/1.0.0/workers/ingredientTreeWorker.js",
   "/dist/js/workers/ventasComprasWorker.js": "/dist/1.0.0/workers/ventasComprasWorker.js",
-  "/dist/js/config.js": "/dist/1.0.0/config.js"
+  "/dist/js/config.js": "/dist/1.0.0/config.js",
+  "/dist/js/config.min.js": "/dist/1.0.0/config.min.js"
 }
