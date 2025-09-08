@@ -5,7 +5,8 @@ const DonesCore = await import('./dones-core.js');
 window.DonesCore = DonesCore;
 
 // Load main dones logic after the core is ready
-await import('./dones.js');
+const mod = await import('./dones.js');
+mod.init();
 
 // Manejo de pestañas en dones.html
 document.addEventListener('DOMContentLoaded', async function() {
