@@ -33,9 +33,10 @@ function verifyReference(ref, baseDir, filePath) {
     return;
   }
   const cleanRef = ref.split(/[?#]/)[0];
-  let target = ref.startsWith('/')
-    ? path.join(rootDir, cleanRef)
+  const resolved = cleanRef.startsWith('/')
+    ? path.join(rootDir, cleanRef.slice(1))
     : path.join(baseDir, cleanRef);
+  let target = resolved;
   if (!fs.existsSync(target)) {
     const mapped = manifest[cleanRef];
     if (mapped) {
