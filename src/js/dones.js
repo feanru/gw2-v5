@@ -1,6 +1,8 @@
 import { showSkeleton, hideSkeleton } from './ui-helpers.js';
 import { restoreCraftIngredientPrototypes } from './items-core.js';
-const { fetchItemData, fetchPriceData } = window.DonesCore || {};
+
+// Always obtain the latest core reference rather than using a stale destructure
+function getCore() { return window.DonesCore || {}; }
 // js/dones.js
 
 // Sección de "Dones Especiales" (ejemplo: Don de la Suerte)
@@ -204,6 +206,12 @@ function renderNodeHtml(node, level = 0) {
 
 
 async function renderDon(don, container) {
+  const { fetchItemData, fetchPriceData } = getCore();
+  if (typeof fetchItemData !== 'function') {
+    errorMsg.innerText = 'Dependencia faltante: fetchItemData.';
+    errorMsg.style.display = 'block';
+    return;
+  }
   // Si no se pasa un contenedor, se usa el global por defecto (comportamiento antiguo)
   const targetContainer = container || document.getElementById('dones-content');
   targetContainer.innerHTML = ''; // Limpiamos el contenedor específico para este don
@@ -495,6 +503,14 @@ async function renderTributoDraconico() {
   if (!container || !tributoDraconicoSkeleton) return;
   showSkeleton(tributoDraconicoSkeleton);
   container.innerHTML = '';
+  errorMsg.style.display = 'none';
+  const { fetchItemData, fetchPriceData } = getCore();
+  if (typeof fetchItemData !== 'function' || typeof fetchPriceData !== 'function') {
+    errorMsg.innerText = 'Dependencias faltantes: fetchItemData y/o fetchPriceData.';
+    errorMsg.style.display = 'block';
+    hideSkeleton(tributoDraconicoSkeleton);
+    return;
+  }
   try {
     if (TRIBUTO_DRACONICO.mainIngredients && TRIBUTO_DRACONICO.mainIngredients.length > 0) {
       let html = `<h3>Ingredientes principales</h3>`;
