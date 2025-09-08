@@ -86,12 +86,23 @@ var DONES = [
 const API_ITEM = "https://api.guildwars2.com/v2/items/";
 const API_PRICES = "https://api.guildwars2.com/v2/commerce/prices/";
 
-const donesContent = document.getElementById('dones-content');
-const donesSkeleton = document.getElementById('dones-skeleton');
-const errorMsg = document.getElementById('error-message');
+let donesContent;
+let donesSkeleton;
+let errorMsg;
 
-window.showSkeleton = showSkeleton;
-window.hideSkeleton = hideSkeleton;
+export function init() {
+  donesContent = document.getElementById('dones-content');
+  donesSkeleton = document.getElementById('dones-skeleton');
+  errorMsg = document.getElementById('error-message');
+  window.showSkeleton = showSkeleton;
+  window.hideSkeleton = hideSkeleton;
+  window.DonesPages = {
+    loadSpecialDons,
+    loadTributo,
+    loadDraconicTribute,
+    loadDones1Gen
+  };
+}
 
 
 // --- Fin de formatGold ---
@@ -488,13 +499,6 @@ async function loadDones1Gen() {
   _loadedTabs.gen1 = true;
   await renderLegendaryWeaponGifts();
 }
-
-window.DonesPages = {
-  loadSpecialDons,
-  loadTributo,
-  loadDraconicTribute,
-  loadDones1Gen
-};
 
 // === Tributo Dracónico ===
 async function renderTributoDraconico() {
