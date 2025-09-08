@@ -128,6 +128,14 @@ function runDonesWorker(rootIngredients) {
     const handleError = (err) => {
       donesWorkerInstance.removeEventListener('message', handleMessage);
       donesWorkerInstance.removeEventListener('error', handleError);
+      // Show a clear message for worker failures
+      errorMsg.innerText = `Error del Worker: ${err.message || 'Fallo inesperado.'}`;
+      errorMsg.style.display = 'block';
+      // Reset the worker so future calls create a fresh instance
+      try {
+        donesWorkerInstance.terminate();
+      } catch {}
+      donesWorkerInstance = null;
       reject(err);
     };
     donesWorkerInstance.addEventListener('message', handleMessage);
@@ -149,6 +157,13 @@ function runCostsWorker(ingredientTree, globalQty) {
     const handleError = (err) => {
       costsWorkerInstance.removeEventListener('message', handleMessage);
       costsWorkerInstance.removeEventListener('error', handleError);
+      // Provide feedback and reset the worker on errors
+      errorMsg.innerText = `Error del Worker: ${err.message || 'Fallo inesperado.'}`;
+      errorMsg.style.display = 'block';
+      try {
+        costsWorkerInstance.terminate();
+      } catch {}
+      costsWorkerInstance = null;
       reject(err);
     };
     costsWorkerInstance.addEventListener('message', handleMessage);
