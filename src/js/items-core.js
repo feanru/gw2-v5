@@ -175,7 +175,10 @@ let lastTotals = { totalBuy: 0, totalSell: 0, totalCrafted: 0 };
 export function recalcAll(ingredientObjs, globalQty) {
   if (!ingredientObjs) return Promise.resolve();
   if (!costsWorker) {
-    costsWorker = new Worker(new URL('./workers/costsWorker.js', import.meta.url), { type: 'module' });
+    const workerUrl = (typeof window !== 'undefined' && window.COSTS_WORKER_HASH)
+      ? `/dist/${window.__APP_VERSION__}/costsWorker.${window.COSTS_WORKER_HASH}.js?v=${window.__APP_VERSION__}`
+      : new URL('./workers/costsWorker.js', import.meta.url);
+    costsWorker = new Worker(workerUrl, { type: 'module' });
   }
   return new Promise((resolve, reject) => {
     const handleMessage = (e) => {

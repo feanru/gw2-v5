@@ -146,7 +146,10 @@ function runDonesWorker(rootIngredients) {
 
 function runCostsWorker(ingredientTree, globalQty) {
   if (!costsWorkerInstance) {
-    costsWorkerInstance = new Worker(new URL('./workers/costsWorker.js', import.meta.url), { type: 'module' });
+    const workerUrl = (typeof window !== 'undefined' && window.COSTS_WORKER_HASH)
+      ? `/dist/${window.__APP_VERSION__}/costsWorker.${window.COSTS_WORKER_HASH}.js?v=${window.__APP_VERSION__}`
+      : new URL('./workers/costsWorker.js', import.meta.url);
+    costsWorkerInstance = new Worker(workerUrl, { type: 'module' });
   }
   return new Promise((resolve, reject) => {
     const handleMessage = (e) => {
