@@ -12,13 +12,15 @@ const noHashEntries = new Set([
   'compareHandlers',
   'cuenta',
   'tabs',
-  'search-modal-core'
+  'search-modal-core',
+  'auth-nav'
 ]);
 
 export default {
   // Entradas separadas para cada vista o funcionalidad pesada
   input: {
     'bundle-auth-nav': 'src/js/bundle-auth-nav.js',
+    'auth-nav': 'src/js/auth-nav.js',
     'bundle-dones': 'src/js/bundle-dones.js',
     'bundle-fractales': 'src/js/bundle-fractales.js',
     'bundle-forja-mistica': 'src/js/bundle-forja-mistica.js',
