@@ -489,12 +489,14 @@ async function loadDones1Gen() {
   await renderLegendaryWeaponGifts();
 }
 
-window.DonesPages = {
-  loadSpecialDons,
-  loadTributo,
-  loadDraconicTribute,
-  loadDones1Gen
-};
+export function init() {
+  window.DonesPages = {
+    loadSpecialDons,
+    loadTributo,
+    loadDraconicTribute,
+    loadDones1Gen
+  };
+}
 
 // === Tributo Dracónico ===
 async function renderTributoDraconico() {
