@@ -1,3 +1,4 @@
+// Self-contained worker without external dependencies.
 class CraftIngredient {
   constructor({id, name, icon, rarity, count, buy_price, sell_price, is_craftable, recipe, children = [], _parentId = null}) {
     this._uid = CraftIngredient.nextUid++;
