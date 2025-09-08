@@ -1,4 +1,5 @@
 {
+  "/dist/js/auth-nav.min.js": "/dist/1.0.0/auth-nav.min.js",
   "/dist/js/tabs.min.js": "/dist/1.0.0/tabs.min.js",
   "/dist/js/search-modal-core.min.js": "/dist/1.0.0/search-modal-core.min.js",
   "/dist/js/storageUtils.min.js": "/dist/1.0.0/storageUtils.min.js",

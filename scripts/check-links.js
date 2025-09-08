@@ -2,6 +2,12 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = path.join(__dirname, '..');
+let manifest = {};
+try {
+  manifest = JSON.parse(
+    fs.readFileSync(path.join(rootDir, 'dist', 'manifest.json'), 'utf8')
+  );
+} catch {}
 
 function getHtmlFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -27,9 +33,15 @@ function verifyReference(ref, baseDir, filePath) {
     return;
   }
   const cleanRef = ref.split(/[?#]/)[0];
-  const target = ref.startsWith('/')
+  let target = ref.startsWith('/')
     ? path.join(rootDir, cleanRef)
     : path.join(baseDir, cleanRef);
+  if (!fs.existsSync(target)) {
+    const mapped = manifest[cleanRef];
+    if (mapped) {
+      target = path.join(rootDir, mapped);
+    }
+  }
   try {
     fs.accessSync(target);
   } catch {
