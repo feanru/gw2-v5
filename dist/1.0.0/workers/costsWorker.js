@@ -1,4 +1,4 @@
-import { CraftIngredient } from '../items-core.js';
+import { CraftIngredient } from '../items-core.C2UiOsx8.min.js';
 
 const ctx = typeof self !== 'undefined' ? self : globalThis;
 
