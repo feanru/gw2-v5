@@ -1,4 +1,12 @@
-import { CraftIngredient } from '../items-core.C2UiOsx8.min.js';
+export {};
+let CraftIngredient;
+if (typeof self === 'undefined') {
+  ({ CraftIngredient } = await import('../items-core.js'));
+} else {
+  const manifest = await fetch('/dist/manifest.json').then(r => r.json()).catch(() => ({}));
+  const itemsCorePath = manifest['/dist/js/items-core.min.js'] || `../items-core.${self.__APP_VERSION__}.min.js`;
+  ({ CraftIngredient } = await import(itemsCorePath));
+}
 
 const ctx = typeof self !== 'undefined' ? self : globalThis;
 
