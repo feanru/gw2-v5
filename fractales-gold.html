@@ -199,9 +199,11 @@
         await ui.renderTablaPrecios();
         const resumenData = await ui.renderTablaResumenOro('tabla-resumen-oro', preciosFractales);
         await ui.renderTablaResumenOroIndividual('tabla-resumen-oro-individual', preciosFractales);
-        ui.renderGraficoContribuciones(resumenData.contribuciones);
-        ui.renderTablaReferenciasProfit('tabla-referencias-profit', preciosFractales, resumenData);
-        ui.renderGraficoAbrirVsVender('abrir-vs-vender-chart', preciosFractales, resumenData);
+        if (resumenData) {
+          ui.renderGraficoContribuciones(resumenData.contribuciones);
+          ui.renderTablaReferenciasProfit('tabla-referencias-profit', preciosFractales, resumenData);
+          ui.renderGraficoAbrirVsVender('abrir-vs-vender-chart', preciosFractales, resumenData);
+        }
         ui.renderExtras(preciosFractales, 24.96);
       }
 
