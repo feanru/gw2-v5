@@ -10,7 +10,7 @@ init();
 
 // Manejo de pestañas en dones.html
 document.addEventListener('DOMContentLoaded', async function() {
-  await import('./tabs.min.js');
+  await import('./tabs.js');
   const loaded = {};
 
   function handleTab(tabId) {
