@@ -13,6 +13,11 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - run: npm run build
+        env:
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+          CLOUDFLARE_BASE_URL: ${{ secrets.CLOUDFLARE_BASE_URL }}
       - run: npm run check-links
       - run: npm run purge:cdn
         env:
